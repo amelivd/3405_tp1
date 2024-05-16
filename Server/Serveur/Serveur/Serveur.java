@@ -27,6 +27,8 @@ public class Serveur {
 		scanner.close();
 	}
 	
+	
+	
 	public void checkIfValid() {
 		askInfo();
 		String[] ipParts = adresseIP.split("\\.");
