@@ -6,8 +6,8 @@ import java.net.ServerSocket;
 
 public class Serveur {
 	private static ServerSocket Listener; // Application Serveur
-	String serverAddress = "127.0.0.1"; 
-	int serverPort = 5000;
+	String serverAddress; //= "127.0.0.1"; 
+	int serverPort;//= 5000;
 	
 	public Serveur() {
 		checkIfValid();
@@ -16,34 +16,38 @@ public class Serveur {
 	public void askInfo()  {
 		Scanner scanner = new Scanner(System.in);
 		
-		System.out.print("Entrez votre adresse IP");
+		System.out.print("Entrez votre adresse IP: ");
 		String ipInput = scanner.nextLine();
 		this.serverAddress = ipInput;
 		
-		System.out.print("Entrez votre numero de port");
+		System.out.print("Entrez votre numero de port: ");
 		String portInput = scanner.nextLine();
-		this.serverPort = Integer.parseInt(portInput);
-		scanner.close();
-	};
+		
+		this.serverPort =  Integer.valueOf(portInput);
+		//scanner.close();
+	}
+	
 	public void checkIfValid() {
 		askInfo();
 		String[] ipParts = serverAddress.split("\\.");
-		 if (ipParts.length != 4) {
+		//System.out.println(ipParts.length + "      ");
+		if (ipParts.length != 4) {
 	            System.out.println("Adresse IP invalide. Veuillez entrer une adresse IP valide.");
 	            checkIfValid();
-	            return;
+	            //return;
 	        }
 		 for (String part : ipParts) {
-	            int byteValue = Integer.parseInt(part);
+	            int byteValue = Integer.valueOf(part);
+	            //System.out.println(byteValue);
 	            if (byteValue < 0 || byteValue > 255) {
 	                System.out.println("Adresse IP invalide. Veuillez entrer une adresse IP valide.");
 	                checkIfValid();
-	                return;
+	                //return;
 	                }
 	            else {
-	                System.out.println("Adresse IP invalide. Veuillez entrer une adresse IP valide.");
-	                checkIfValid();
-	                return;
+	                //System.out.println("Adresse IP invalide. Veuillez entrer une adresse IP valide.");
+	                //checkIfValid();
+	                //return;
 	            }
 	        }
 		
@@ -54,8 +58,12 @@ public class Serveur {
 	        }
 		
 		};
+		
+		public static void main(String[] args) {
+			Serveur serveur = new Serveur();
+		}
 	
-		public static void main(String[] args) throws Exception {
+		/*public static void main(String[] args) throws Exception {
 			// Compteur incrémenté à chaque connexion d'un client au serveur
 			int clientNumber = 0;
 			// Adresse et port du serveur
@@ -82,4 +90,5 @@ public class Serveur {
 			Listener.close();
 			} 
 		}
+		*/
 	}
