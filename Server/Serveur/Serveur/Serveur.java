@@ -1,5 +1,6 @@
 package Serveur;
 import java.util.Scanner;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -29,13 +30,19 @@ public class Serveur {
 	
 	public void checkIfValid() {
 		askInfo();
-		String[] ipParts = serverAddress.split("\\.");
+		String[] ipParts = null;
+		try {
+			ipParts = serverAddress.split("\\.");
+		}
+		catch (NumberFormatException e){
+		}
 		//System.out.println(ipParts.length + "      ");
 		if (ipParts.length != 4) {
 	            System.out.println("Adresse IP invalide. Veuillez entrer une adresse IP valide.");
 	            checkIfValid();
 	            //return;
 	        }
+		if (ipParts != null) {
 		 for (String part : ipParts) {
 	            int byteValue = Integer.valueOf(part);
 	            //System.out.println(byteValue);
@@ -50,12 +57,13 @@ public class Serveur {
 	                //return;
 	            }
 	        }
+		}
 		
 		 if (serverPort < 5000 || serverPort > 5050) {
 	            System.out.println("Numero de port invalide. Veuillez entrer un numero de port entre 5000 et 5050.");
 	            checkIfValid();
 	            return;
-	        }
+	     }
 		
 		};
 		
@@ -91,4 +99,4 @@ public class Serveur {
 			} 
 		}
 		*/
-	}
+}
