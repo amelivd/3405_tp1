@@ -15,13 +15,15 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 			try {
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
-				} 
+				
+			} 
 			catch (IOException e) {
 				System.out.println("Error handling client# " + clientNumber + ": " + e);
 			} 
 			finally {
 				try {
 					socket.close();
+					System.out.println("Socket closed");
 					} 
 				catch (IOException e) {
 					System.out.println("Couldn't close a socket, what's going on?");
@@ -30,4 +32,8 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 			}
 			
 		}
+		//public void main() {
+			//ClientHandler clientHandler = new ClientHandler(new Socket(), 5);
+			
+		//}
 }
