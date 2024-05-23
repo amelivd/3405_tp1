@@ -21,16 +21,23 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 		}
 		public void run() { // Création de thread qui envoi un message à un client
 			try {
+				//in.close();
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
+				//DataInputStream in = new DataInputStream(socket.getInputStream());
+				//String imageInfo = in.readUTF();
+				//out.writeUTF(imageInfo);
 				//System.out.println(System.getProperty("user.dir"));
 				//DataInputStream in = new DataInputStream(socket.getInputStream());
 				//String imageInfo = in.readUTF();
 				//System.out.println("Received from client: " + imageInfo);
 				
-				File file = new File("Server/Serveur/Serveur/polyImage.jpg");
+				File file = new File("Server/Serveur/Client/polyImage.jpg");
 				BufferedImage image = ImageIO.read(file);
-				Sobel.process(image);
+				BufferedImage newImage = Sobel.process(image);
+				File outputFile = new File("Server/Serveur/Client/polyImage_processed.jpg");
+				ImageIO.write(newImage, "jpg", outputFile);
+
 			} 
 			catch (IOException e) {
 				System.out.println("Error handling client# " + clientNumber + ": " + e);

@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.ServerSocket;
@@ -25,7 +26,7 @@ public class Serveur {
 	//public static String serverAddress; //= "127.0.0.1"; 
 	//public static int serverPort;//= 5000;
 	//public int numeroClient = 0;
-	File file = new File("baseDonnees.txt");
+	//File file = new File("baseDonnees.txt");
 	/*public Serveur() {
 		verify(this::askInfo);
 		try (ServerSocket serverSocket = new ServerSocket(serverPort)){
@@ -144,6 +145,7 @@ public class Serveur {
 			
 			boolean isValid = verify(serverAddress, serverPort);
 			input.close();
+			
 			// Création de la connexion pour communiquer avec les clients
 			if (isValid) {
 				Listener = new ServerSocket();
@@ -153,6 +155,7 @@ public class Serveur {
 				// Association de l'adresse et du port à la connexien
 				Listener.bind(new InetSocketAddress(serverIP, serverPort));
 				System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);
+				
 				
 				//File file = new File("Server/Serveur/Serveur/baseDonnees.txt");
 				//creerCompte(file, "layla", "ly");

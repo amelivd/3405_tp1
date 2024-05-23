@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import Serveur.InfoRequest;
 
 // Application client
 public class Client {
@@ -133,17 +132,23 @@ public class Client {
 			password = info[1];
 			clientValid = verifyClientInfo(username, password);
 		}
-		
+		String infoImage = getInfosImage(username, serverAddress, serverPort, input);
 		//input.close();
 		
 		// Création d'une nouvelle connexion aves le serveur
 		if (clientValid) {
+			//socket = new Socket(serverAddress, serverPort);
 			System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
-			System.out.println(getInfosImage(username, serverAddress, serverPort, input));
-			System.out.println(input.nextLine());
+			System.out.println(infoImage);
+			//System.out.println(input.nextLine());
 			socket = new Socket(serverAddress, serverPort);
 			//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			//out.writeUTF(getInfosImage(username, serverAddress, serverPort, input));
+			//String infoImage = getInfosImage(username, serverAddress, serverPort, input);
+			//out.writeUTF("Hello from client!");
+			//out.writeUTF(infoImage);
+			//System.out.println(input.next());
+			//String inf = input.nextLine();
+			//out.writeUTF(inf);
 			//PrintWriter writer = new PrintWriter(output, true);
 			//writer.println(getInfosImage(username, serverAddress, serverPort));
 			
@@ -163,6 +168,7 @@ public class Client {
 			// Attente de la réception d'un message envoyé par le, server sur le canal
 			String helloMessageFromServer = in.readUTF();
 			System.out.println(helloMessageFromServer);
+			//in.close();
 			// fermeture de La connexion avec le serveur
 			socket.close();
 		}

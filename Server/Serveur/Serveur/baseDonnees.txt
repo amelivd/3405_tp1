@@ -10,3 +10,5 @@ javier ja
 lola lo
 lili li
 leo le
+LEO LE
+lreo lr
