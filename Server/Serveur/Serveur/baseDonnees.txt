@@ -5,3 +5,8 @@ thomas th
 fred fr
 lucas lu
 kevin ke
+greg gr
+javier ja
+lola lo
+lili li
+leo le

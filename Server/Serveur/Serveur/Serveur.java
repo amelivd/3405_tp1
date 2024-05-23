@@ -153,6 +153,7 @@ public class Serveur {
 				// Association de l'adresse et du port à la connexien
 				Listener.bind(new InetSocketAddress(serverIP, serverPort));
 				System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);
+				
 				//File file = new File("Server/Serveur/Serveur/baseDonnees.txt");
 				//creerCompte(file, "layla", "ly");
 				
@@ -166,13 +167,13 @@ public class Serveur {
 						new ClientHandler(Listener.accept(), clientNumber++).start();
 					}
 				} 
-				catch (IOException e) {
-					System.out.println(e.getMessage());
-				}
+				//catch (IOException e) {
+					//System.out.println(e.getMessage());
+				//}
 				finally {
 				// Fermeture de la connexion
-					if (Listener != null && !Listener.isClosed())
-						Listener.close();
+					//if (Listener != null && !Listener.isClosed())
+					Listener.close();
 				} 
 			}
 		}

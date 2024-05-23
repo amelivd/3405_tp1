@@ -1,5 +1,6 @@
 package Client;
 import Serveur.Serveur;
+import java.io.DataOutputStream;
 import Serveur.ClientHandler;
 import java.io.File;
 import java.io.DataInputStream;
@@ -96,22 +97,21 @@ public class Client {
 			}
 		
 	} 
-	/*
-	public String[] infosImage() {
+	public static String getInfosImage(String username, String address, int port,Scanner scanner) {
 		String nomImage = null;
-		Scanner scanner = new Scanner(System.in);
+		//Scanner scanner = new Scanner(System.in);
 		System.out.print("Veuillez indiquer le nom de l'image à traiter: ");
 		nomImage = scanner.nextLine();
-		scanner.close();
+		//scanner.close();
 		LocalDate date = LocalDate.now();
 		LocalTime time = LocalTime.now();
-		String[] infos = new String[] {
-				"[", nomUtilisateur, " - ", clientAddresse, ":", String.valueOf(clientPort),
-				" - ", String.valueOf(date), "@", String.valueOf(time), "] : ",
-				"Image ", nomImage, "jpg reçue pour traitement."
-				};
+		String infos = 
+				"[" + username + " - " + address + ":" + String.valueOf(port) +
+				" - " + String.valueOf(date) + "@" + String.valueOf(time) + "] : " +
+				"Image " + nomImage + "jpg reçue pour traitement.";
+				
 		return infos;
-	}*/
+	}
 	
 	public static void main(String[] args) throws Exception {
 		//Client client = new Client(new Socket("127.0.0.1", 5000));
@@ -125,26 +125,47 @@ public class Client {
 		boolean serverValid = Serveur.verify(serverAddress, serverPort);
 		// Adresse et port du serveur
 		boolean clientValid = false;
+		String username = null;
+		String password = null;
 		if (serverValid) {
 			getClientInfo(info, input);
-			String username = info[0];
-			String password = info[1];
+			username = info[0];
+			password = info[1];
 			clientValid = verifyClientInfo(username, password);
 		}
 		
-		input.close();
+		//input.close();
 		
 		// Création d'une nouvelle connexion aves le serveur
 		if (clientValid) {
-			socket = new Socket(serverAddress, serverPort);
 			System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
+			System.out.println(getInfosImage(username, serverAddress, serverPort, input));
+			System.out.println(input.nextLine());
+			socket = new Socket(serverAddress, serverPort);
+			//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			//out.writeUTF(getInfosImage(username, serverAddress, serverPort, input));
+			//PrintWriter writer = new PrintWriter(output, true);
+			//writer.println(getInfosImage(username, serverAddress, serverPort));
+			
+			//InputStreamReader read = new InputStreamReader(socket.getInputStream());
+	        //BufferedReader lecteur = new BufferedReader(read);
+	
+	        //String message = lecteur.readLine();
+	        //System.out.println("Server message: " + message);
+			//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            //out.writeUTF(getInfosImage(username, serverAddress, serverPort));
+
+			//String imageInfo = getInfosImage(username, serverAddress, serverPort);
+
+			//System.out.println(getInfosImage(username, serverAddress, serverPort));
 			// Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur
 			DataInputStream in = new DataInputStream(socket.getInputStream());
 			// Attente de la réception d'un message envoyé par le, server sur le canal
 			String helloMessageFromServer = in.readUTF();
 			System.out.println(helloMessageFromServer);
 			// fermeture de La connexion avec le serveur
-			//socket.close();
+			socket.close();
 		}
+		input.close();
 	}
 }
