@@ -160,9 +160,9 @@ public class Client {
 				//System.out.println(input.nextLine());
 				socket = new Socket(serverAddress, serverPort);
 				
-				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-				out.writeUTF(infoImage[0]);
-				out.writeUTF(infoImage[1]);
+				//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+				//out.writeUTF(infoImage[0]);
+				//out.writeUTF(infoImage[1]);
 				//System.out.println(input.nextLine());
 				//String imageInfo = getInfosImage();
 				//String infoImage = getInfosImage(username, serverAddress, serverPort, input);
@@ -187,28 +187,37 @@ public class Client {
 	            //out.writeUTF(getInfosImage(username, serverAddress, serverPort));
 	
 				//String imageInfo = getInfosImage(username, serverAddress, serverPort);
-	
+				//String[] infoImage = getInfosImage(username, serverAddress, serverPort, input);
 				//System.out.println(getInfosImage(username, serverAddress, serverPort));
 				// Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur
-				DataInputStream in = new DataInputStream(socket.getInputStream());
+				//DataInputStream in = new DataInputStream(socket.getInputStream());
 				//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+				DataInputStream in = new DataInputStream(socket.getInputStream());
+				System.out.println(in.readUTF());
+				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 				// Attente de la réception d'un message envoyé par le, server sur le canal
-				String helloMessageFromServer = in.readUTF();
-				System.out.println(helloMessageFromServer);
+				//String helloMessageFromServer = in.readUTF();
+				//String hello = in.readUTF();
+				//String hello = in.readUTF();
+				//System.out.println(helloMessageFromServer);
 				//int random = input.nextInt();
-				System.out.println(input.nextLine());
+				//System.out.println(input.nextLine());
 				//String[] infoImage = getInfosImage(username, serverAddress, serverPort, input);
 				//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-				//out.writeUTF(infoImage[0]);
-				//out.writeUTF(infoImage[1]);
+				out.writeUTF(infoImage[0]);
+				out.writeUTF(infoImage[1]);
 				//in.close();
 				// fermeture de La connexion avec le serveur
-				socket.close();
+				
+				//socket.close();
 			}
 			finally {
-				input.close();
+				System.out.println("Press to continue: " + input.nextLine());
+				//input.close();
 			}
 		}
+		System.out.println("Press to continue: " + input.nextLine());
+		socket.close();
 		//input.close();
 	}
 }

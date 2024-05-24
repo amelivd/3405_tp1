@@ -1,5 +1,6 @@
 package Serveur;
 import java.io.DataOutputStream;
+import java.util.Scanner;
 import java.io.DataInputStream;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -22,12 +23,16 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 	
 		public void run() { // Création de thread qui envoi un message à un client
 			try {
+				Scanner scanner = new Scanner(System.in);
 				//in.close();
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
-				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
 				DataInputStream message = new DataInputStream(socket.getInputStream());
+				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
+				System.out.print(scanner.nextLine());
+				
+				//DataInputStream message = new DataInputStream(socket.getInputStream());
 				//String message = in.readUTF();
-				System.out.println("Received from client#" + clientNumber + ":" + message.readUTF());
+				System.out.print("Received from client#" + clientNumber + ":" + message.readUTF());
 				//System.out.println(message.readUTF());
 				
 				//String response = "Message received: " + message;
@@ -39,12 +44,12 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 				//DataInputStream in = new DataInputStream(socket.getInputStream());
 				//String imageInfo = in.readUTF();
 				//System.out.println("Received from client: " + imageInfo);
-				//String nameImage = message.readUTF();
-				File file = new File("Server/Serveur/Client/polyImage.jpg");
+				String nameImage = message.readUTF();
+				File file = new File("Server/Serveur/Client/" + nameImage + ".jpg");
 				System.out.println("Image from client has been received.");
 				BufferedImage image = ImageIO.read(file);
 				BufferedImage newImage = Sobel.process(image);
-				File outputFile = new File("Server/Serveur/Client/polyImage_processed.jpg");
+				File outputFile = new File("Server/Serveur/Client/" + nameImage + "_processed.jpg");
 				ImageIO.write(newImage, "jpg", outputFile);
 				System.out.println("Resulting image saved in: " + outputFile.getPath());
 

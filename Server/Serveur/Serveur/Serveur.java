@@ -142,7 +142,7 @@ public class Serveur {
 			int serverPort = Integer.valueOf(info[1]);
 			
 			boolean isValid = verify(serverAddress, serverPort);
-			input.close();
+			//input.close();
 			
 			
 			
