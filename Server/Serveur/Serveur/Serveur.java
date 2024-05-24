@@ -144,6 +144,8 @@ public class Serveur {
 			boolean isValid = verify(serverAddress, serverPort);
 			input.close();
 			
+			
+			
 			// Création de la connexion pour communiquer avec les clients
 			if (isValid) {
 				Listener = new ServerSocket();

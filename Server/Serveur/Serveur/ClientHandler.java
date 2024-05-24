@@ -25,9 +25,10 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 				//in.close();
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
-				//DataInputStream in = new DataInputStream(socket.getInputStream());
+				DataInputStream message = new DataInputStream(socket.getInputStream());
 				//String message = in.readUTF();
-				//System.out.println("Received from client#" + clientNumber + ":" + message);
+				System.out.println("Received from client#" + clientNumber + ":" + message.readUTF());
+				//System.out.println(message.readUTF());
 				
 				//String response = "Message received: " + message;
 				//out.writeUTF(response);
@@ -38,7 +39,7 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 				//DataInputStream in = new DataInputStream(socket.getInputStream());
 				//String imageInfo = in.readUTF();
 				//System.out.println("Received from client: " + imageInfo);
-				
+				//String nameImage = message.readUTF();
 				File file = new File("Server/Serveur/Client/polyImage.jpg");
 				System.out.println("Image from client has been received.");
 				BufferedImage image = ImageIO.read(file);
