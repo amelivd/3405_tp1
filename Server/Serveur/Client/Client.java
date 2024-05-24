@@ -8,12 +8,15 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
 import java.io.BufferedReader;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 // Application client
 public class Client {
@@ -89,25 +92,32 @@ public class Client {
 
 		}
 		else {
-			System.out.print("Creation de compte");
+			System.out.println("Creation de compte");
 			//System.out.println(System.getProperty("user.dir"));
 			Serveur.creerCompte(newFile, username, password);
 			return true;
 			}
 		
 	} 
-	public static String getInfosImage(String username, String address, int port,Scanner scanner) {
+	public static String getInfosImage(String username, String address, int port, Scanner scanner) {
 		String nomImage = null;
 		//Scanner scanner = new Scanner(System.in);
 		System.out.print("Veuillez indiquer le nom de l'image à traiter: ");
 		nomImage = scanner.nextLine();
+		try {
+			File file = new File("Server/Serveur/Client/" + nomImage + ".txt");
+		}
+		finally {
+			System.out.println("Image name same as path");
+		}
 		//scanner.close();
 		LocalDate date = LocalDate.now();
 		LocalTime time = LocalTime.now();
+		LocalTime roundedTime = LocalTime.of(time.getHour(), time.getMinute(), time.getSecond());
 		String infos = 
 				"[" + username + " - " + address + ":" + String.valueOf(port) +
-				" - " + String.valueOf(date) + "@" + String.valueOf(time) + "] : " +
-				"Image " + nomImage + "jpg reçue pour traitement.";
+				" - " + String.valueOf(date) + "@" + String.valueOf(roundedTime) + "] : " +
+				"Image " + nomImage + ".jpg reçue pour traitement.";
 				
 		return infos;
 	}
@@ -132,46 +142,62 @@ public class Client {
 			password = info[1];
 			clientValid = verifyClientInfo(username, password);
 		}
-		String infoImage = getInfosImage(username, serverAddress, serverPort, input);
+		//String infoImage = getInfosImage(username, serverAddress, serverPort, input);
 		//input.close();
 		
 		// Création d'une nouvelle connexion aves le serveur
 		if (clientValid) {
-			//socket = new Socket(serverAddress, serverPort);
-			System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
-			System.out.println(infoImage);
-			//System.out.println(input.nextLine());
-			socket = new Socket(serverAddress, serverPort);
-			//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			//String infoImage = getInfosImage(username, serverAddress, serverPort, input);
-			//out.writeUTF("Hello from client!");
-			//out.writeUTF(infoImage);
-			//System.out.println(input.next());
-			//String inf = input.nextLine();
-			//out.writeUTF(inf);
-			//PrintWriter writer = new PrintWriter(output, true);
-			//writer.println(getInfosImage(username, serverAddress, serverPort));
-			
-			//InputStreamReader read = new InputStreamReader(socket.getInputStream());
-	        //BufferedReader lecteur = new BufferedReader(read);
+			try {
+				//socket = new Socket(serverAddress, serverPort);
+				System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
+				System.out.println(" ");
 	
-	        //String message = lecteur.readLine();
-	        //System.out.println("Server message: " + message);
-			//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            //out.writeUTF(getInfosImage(username, serverAddress, serverPort));
-
-			//String imageInfo = getInfosImage(username, serverAddress, serverPort);
-
-			//System.out.println(getInfosImage(username, serverAddress, serverPort));
-			// Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			// Attente de la réception d'un message envoyé par le, server sur le canal
-			String helloMessageFromServer = in.readUTF();
-			System.out.println(helloMessageFromServer);
-			//in.close();
-			// fermeture de La connexion avec le serveur
-			socket.close();
+				String infoImage = getInfosImage(username, serverAddress, serverPort, input);
+				System.out.println(infoImage);
+				System.out.println(input.nextLine());
+				socket = new Socket(serverAddress, serverPort);
+				
+				//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+				//String imageInfo = getInfosImage();
+				//String infoImage = getInfosImage(username, serverAddress, serverPort, input);
+				//String im = input.nextLine();
+				//out.writeUTF(infoImage);
+				//System.out.println("Message sent to the server.");
+				//String random = input.nextLine();
+				//out.writeUTF("Hello from client!");
+				//out.writeUTF(infoImage);
+				//System.out.println(input.next());
+				//String inf = input.nextLine();
+				//out.writeUTF(inf);
+				//PrintWriter writer = new PrintWriter(output, true);
+				//writer.println(getInfosImage(username, serverAddress, serverPort));
+				
+				//InputStreamReader read = new InputStreamReader(socket.getInputStream());
+		        //BufferedReader lecteur = new BufferedReader(read);
+		
+		        //String message = lecteur.readLine();
+		        //System.out.println("Server message: " + message);
+				//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+	            //out.writeUTF(getInfosImage(username, serverAddress, serverPort));
+	
+				//String imageInfo = getInfosImage(username, serverAddress, serverPort);
+	
+				//System.out.println(getInfosImage(username, serverAddress, serverPort));
+				// Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur
+				DataInputStream in = new DataInputStream(socket.getInputStream());
+				// Attente de la réception d'un message envoyé par le, server sur le canal
+				String helloMessageFromServer = in.readUTF();
+				System.out.println(helloMessageFromServer);
+				//int random = input.nextInt();
+				System.out.println(input.nextLine());
+				in.close();
+				// fermeture de La connexion avec le serveur
+				socket.close();
+			}
+			finally {
+				input.close();
+			}
 		}
-		input.close();
+		//input.close();
 	}
 }

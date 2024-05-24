@@ -25,18 +25,16 @@ public class Serveur {
 	private static ServerSocket Listener; // Application Serveur
 	//public static String serverAddress; //= "127.0.0.1"; 
 	//public static int serverPort;//= 5000;
-	//public int numeroClient = 0;
+	//public static int clientNumber = 0;
 	//File file = new File("baseDonnees.txt");
 	/*public Serveur() {
-		verify(this::askInfo);
 		try (ServerSocket serverSocket = new ServerSocket(serverPort)){
 			System.out.println("Le serveur ecoute le port " + serverPort);
 			while (true) {
 	                Socket socket = serverSocket.accept(); // Accept a new client connection
-	                numeroClient++;
 	                System.out.println(serverSocket);
-	                ClientHandler clientHandler = new ClientHandler(socket, numeroClient);
-	                System.out.print("Succès d'envoi de l'image");
+	                ClientHandler clientHandler = new ClientHandler(socket, clientNumber);
+	                //System.out.print("Succès d'envoi de l'image");
 	                InputStreamReader input = new InputStreamReader(socket.getInputStream());
 	                BufferedReader reader = new BufferedReader(input);
 	                String message = reader.readLine();
@@ -45,13 +43,13 @@ public class Serveur {
 	                //PrintWriter writer = new PrintWriter(output, true);
 	                //writer.println("Hello, client!"); // Send a message to the client
 
-	                socket.close(); 
+	                //socket.close(); 
 	            }
 		} catch (IOException e) {
-			
+			System.out.println(e.getMessage());
 		}
-	}
-	*/
+	}*/
+
 	public static void getServerInfo(String[] info, Scanner scanner) {
 		System.out.print("Entrez l'adresse IP du serveur: ");
 		info[0] = scanner.nextLine();
@@ -154,9 +152,7 @@ public class Serveur {
 	
 				// Association de l'adresse et du port à la connexien
 				Listener.bind(new InetSocketAddress(serverIP, serverPort));
-				System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);
-				
-				
+				System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);				
 				//File file = new File("Server/Serveur/Serveur/baseDonnees.txt");
 				//creerCompte(file, "layla", "ly");
 				

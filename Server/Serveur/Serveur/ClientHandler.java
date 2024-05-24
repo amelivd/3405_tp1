@@ -19,11 +19,18 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 		this.clientNumber = clientNumber; 
 		System.out.println("New connection with client#" + clientNumber + " at" + socket);
 		}
+	
 		public void run() { // Création de thread qui envoi un message à un client
 			try {
 				//in.close();
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
+				//DataInputStream in = new DataInputStream(socket.getInputStream());
+				//String message = in.readUTF();
+				//System.out.println("Received from client#" + clientNumber + ":" + message);
+				
+				//String response = "Message received: " + message;
+				//out.writeUTF(response);
 				//DataInputStream in = new DataInputStream(socket.getInputStream());
 				//String imageInfo = in.readUTF();
 				//out.writeUTF(imageInfo);
@@ -33,10 +40,12 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 				//System.out.println("Received from client: " + imageInfo);
 				
 				File file = new File("Server/Serveur/Client/polyImage.jpg");
+				System.out.println("Image from client has been received.");
 				BufferedImage image = ImageIO.read(file);
 				BufferedImage newImage = Sobel.process(image);
 				File outputFile = new File("Server/Serveur/Client/polyImage_processed.jpg");
 				ImageIO.write(newImage, "jpg", outputFile);
+				System.out.println("Resulting image saved in: " + outputFile.getPath());
 
 			} 
 			catch (IOException e) {
