@@ -28,6 +28,9 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
 				DataInputStream message = new DataInputStream(socket.getInputStream());
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
+				out.writeUTF("Press to continue.");
+				//System.out.print(scanner.nextLine());
+				System.out.println("Press to continue.");
 				System.out.print(scanner.nextLine());
 				
 				//DataInputStream message = new DataInputStream(socket.getInputStream());

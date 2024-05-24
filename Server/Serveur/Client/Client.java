@@ -194,6 +194,7 @@ public class Client {
 				//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 				DataInputStream in = new DataInputStream(socket.getInputStream());
 				System.out.println(in.readUTF());
+				System.out.println(in.readUTF());
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 				// Attente de la réception d'un message envoyé par le, server sur le canal
 				//String helloMessageFromServer = in.readUTF();
@@ -206,6 +207,7 @@ public class Client {
 				//DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 				out.writeUTF(infoImage[0]);
 				out.writeUTF(infoImage[1]);
+				//System.out.println(in.readUTF());
 				//in.close();
 				// fermeture de La connexion avec le serveur
 				
