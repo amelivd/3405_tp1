@@ -8,8 +8,6 @@ import Client.Sobel;
 import java.io.IOException;
 import java.net.Socket;
 
-import javax.imageio.ImageIO;
-
 import java.io.File;
 
 public class ClientHandler extends Thread { // pour traiter la demande de chaque client sur un socket particulier
@@ -24,29 +22,15 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 		public void run() { // Création de thread qui envoi un message à un client
 			try {
 				Scanner scanner = new Scanner(System.in);
-				//in.close();
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
 				DataInputStream message = new DataInputStream(socket.getInputStream());
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
 				out.writeUTF("Press to continue.");
-				//System.out.print(scanner.nextLine());
 				System.out.println("Press to continue.");
 				System.out.print(scanner.nextLine());
-				
-				//DataInputStream message = new DataInputStream(socket.getInputStream());
-				//String message = in.readUTF();
+
 				System.out.print("Received from client#" + clientNumber + ":" + message.readUTF());
-				//System.out.println(message.readUTF());
-				
-				//String response = "Message received: " + message;
-				//out.writeUTF(response);
-				//DataInputStream in = new DataInputStream(socket.getInputStream());
-				//String imageInfo = in.readUTF();
-				//out.writeUTF(imageInfo);
-				//System.out.println(System.getProperty("user.dir"));
-				//DataInputStream in = new DataInputStream(socket.getInputStream());
-				//String imageInfo = in.readUTF();
-				//System.out.println("Received from client: " + imageInfo);
+
 				String nameImage = message.readUTF();
 				File file = new File("Server/Serveur/Client/" + nameImage + ".jpg");
 				System.out.println("Image from client has been received.");
@@ -72,8 +56,5 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 			}
 			
 		}
-		//public void main() {
-			//ClientHandler clientHandler = new ClientHandler(new Socket(), 5);
-			
-		//}
+
 }
