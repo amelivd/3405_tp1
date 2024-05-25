@@ -93,7 +93,7 @@ public class Client {
 		if (clientValid) {
 			try {
 				System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
-				System.out.println(" ");
+				System.out.println(" ");  // pour sauter de ligne
 	
 				String[] infoImage = getInfosImage(username, serverAddress, serverPort, input);
 				socket = new Socket(serverAddress, serverPort);
@@ -109,10 +109,8 @@ public class Client {
 
 			}
 			finally {
-				System.out.println("Press to continue: " + input.nextLine());
 			}
 		}
-		System.out.println("Press to continue: " + input.nextLine());
 		socket.close();
 	}
 }

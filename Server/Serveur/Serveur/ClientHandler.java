@@ -27,7 +27,6 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 				DataInputStream message = new DataInputStream(socket.getInputStream());
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
 				out.writeUTF("Press to continue.");
-				System.out.println("Press to continue.");
 				System.out.println("Received from client#" + clientNumber + ":" + message.readUTF());
 
 				String nameImage = message.readUTF();
