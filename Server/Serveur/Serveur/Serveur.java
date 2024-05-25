@@ -1,181 +1,117 @@
-package Serveur;
-import java.util.Scanner;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.io.BufferedWriter;
+package Client;
+import Serveur.Serveur;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileWriter;
-import java.net.ServerSocket;
+import java.io.DataInputStream;
 import java.net.Socket;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import Client.Client;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
+// Application client
+public class Client {
+	private static Socket socket;
+	public int clientPort;
+	public String clientAddresse;
+	String nomUtilisateur = null;
+	String motDePasse = null;
+	String nomImage = null;
 
-public class Serveur {
-	private static ServerSocket Listener; // Application Serveur
-	//public static String serverAddress; //= "127.0.0.1"; 
-	//public static int serverPort;//= 5000;
-	//public static int clientNumber = 0;
-	//File file = new File("baseDonnees.txt");
-	/*public Serveur() {
-		try (ServerSocket serverSocket = new ServerSocket(serverPort)){
-			System.out.println("Le serveur ecoute le port " + serverPort);
-			while (true) {
-	                Socket socket = serverSocket.accept(); // Accept a new client connection
-	                System.out.println(serverSocket);
-	                ClientHandler clientHandler = new ClientHandler(socket, clientNumber);
-	                //System.out.print("Succès d'envoi de l'image");
-	                InputStreamReader input = new InputStreamReader(socket.getInputStream());
-	                BufferedReader reader = new BufferedReader(input);
-	                String message = reader.readLine();
-	                System.out.println("Server message: " + message);
-	                //OutputStream output = socket.getOutputStream();
-	                //PrintWriter writer = new PrintWriter(output, true);
-	                //writer.println("Hello, client!"); // Send a message to the client
-
-	                //socket.close(); 
-	            }
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
-	}*/
-
-	public static void getServerInfo(String[] info, Scanner scanner) {
-		System.out.print("Entrez l'adresse IP du serveur: ");
-		info[0] = scanner.nextLine();
+	public static void getClientInfo(String[] userInfo, Scanner scanner) {
+		System.out.print("Veuillez entrer votre nom d'utilisateur: ");
+		userInfo[0] = scanner.nextLine();
 		
-		System.out.print("Entrez le port d'écoute du serveur: ");
-		info[1] = scanner.nextLine();
-		//scanner.close();
+		System.out.print("Veuillez entrer votre mot de passe: ");
+		userInfo[1] = scanner.nextLine();
 	}
-
 	
-	public static boolean verify( String adresse, int port) {
-		String[] ipParts = null;
-		boolean isValid = true;
+	public static boolean verifyClientInfo(String username, String password) {
+		File newFile = new File("src/Serveur/baseDonnees.txt");
+		String[] donnees = Serveur.getDonnees(newFile, username);
+		
+		if (donnees[0] != null ) {
+			if (donnees[1].equals(password)) {
+				System.out.println("Compte existant et valide.");
+				return true;
+			}
+			else {
+				System.out.println("Erreur dans la saisie du mot de passe.");
+				return false;
+			}
+
+		}
+		else {
+			System.out.println("Creation de compte");
+			Serveur.creerCompte(newFile, username, password);
+			return true;
+			}
+		
+	} 
+	public static String[] getInfosImage(String username, String address, int port, Scanner scanner) {
+		String[] pack = new String[2];
+		String nomImage = null;
+		System.out.print("Veuillez indiquer le nom de l'image à traiter: ");
+		nomImage = scanner.nextLine();
 		try {
-			ipParts = adresse.split("\\.");
+			File file = new File("Server/Serveur/Client/" + nomImage + ".txt");
 		}
-		catch (NumberFormatException e){
+		finally {
+			System.out.println("Image name same as path");
 		}
-		if (ipParts.length != 4) {
-	            System.out.println("Adresse IP invalide. ");
-	            //verify(infoRequest, adresse, port);
-	            isValid = false;
-	        }
-		if (ipParts != null) {
-		 for (String part : ipParts) {
-	            int byteValue = Integer.valueOf(part);
-	            if (byteValue < 0 || byteValue > 255) {
-	                System.out.println("Adresse IP invalide. ");
-	                isValid = false;
-	                //verify(infoRequest, adresse, port);
-	                }
-	        }
-		}
-		
-		 if (port < 5000 || port > 5050) {
-	            System.out.println("Numero de port invalide.");
-	            isValid = false;
-	            //verify(infoRequest, adresse, port);
-	     }
-		 return isValid;
-		
+		LocalDate date = LocalDate.now();
+		LocalTime time = LocalTime.now();
+		LocalTime roundedTime = LocalTime.of(time.getHour(), time.getMinute(), time.getSecond());
+		String infos = 
+				"[" + username + " - " + address + ":" + String.valueOf(port) +
+				" - " + String.valueOf(date) + "@" + String.valueOf(roundedTime) + "] : " +
+				"Image " + nomImage + ".jpg reçue pour traitement. ";
+		pack[0] = infos;
+		pack[1] = nomImage;
+				
+		return pack;
 	}
 	
-		
-	public static void creerCompte(File file, String nomUtilisateur, String password) {
-			try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-				writer.write(nomUtilisateur + " ");
-				writer.write(password);
-				writer.newLine();
-			} catch (IOException e) {
-				System.err.println("Error writing to file: " + file.getPath());
-	            e.printStackTrace();
-			}
+	public static void main(String[] args) throws Exception {
+		Scanner input = new Scanner(System.in);
+		String[] serverInfo = new String[2];
+		Serveur.getServerInfo(serverInfo, input);
+		String serverAddress = serverInfo[0];
+		int serverPort = Integer.valueOf(serverInfo[1]);
+		boolean serverValid = Serveur.verify(serverAddress, serverPort);
+		// Adresse et port du serveur
+		boolean clientValid = false;
+		String username = null;
+		String password = null;
+		if (serverValid) {
+			String[] clientInfo = new String[2];
+			getClientInfo(clientInfo, input);
+			username = clientInfo[0];
+			password = clientInfo[1];
+			clientValid = verifyClientInfo(username, password);
 		}
-		
-		
-		public static String[] getDonnees(File data, String element) {
-			String elem1 = null;
-			String elem2 = null;
+		// Création d'une nouvelle connexion avec le serveur
+		if (clientValid) {
 			try {
-				Scanner scanner = new Scanner(data);
-				while(scanner.hasNextLine()) {
-					String[] line = scanner.nextLine().split(" ");
-					//System.out.println(line[0] + " " + line[1]);
-					if (line[0].equals(element)) {
-						elem1 = line[0];
-						elem2 = line[1];
-						break;
-					}
-				}
-				scanner.close();
-			}
-			catch (FileNotFoundException e) {
-				 System.err.println("File not found: " + data.getPath());
-			}
-			String[] infos = new String[] {elem1, elem2};
-			return infos;
-		}
-		
-		public static void main(String[] args) throws Exception {
-			// Compteur incrémenté à chaque connexion d'un client au serveur
-			Scanner input = new Scanner(System.in);
-			int clientNumber = 0;
-			// Adresse et port du serveur
-			//String serverAddress = "127.0.0.1"; 
-			//int serverPort = 5000;
-			String[] info = new String[2];
-			getServerInfo(info, input);
-			String serverAddress = info[0];
-			int serverPort = Integer.valueOf(info[1]);
-			
-			boolean isValid = verify(serverAddress, serverPort);
-			//input.close();
-			
-			
-			
-			// Création de la connexion pour communiquer avec les clients
-			if (isValid) {
-				Listener = new ServerSocket();
-				Listener.setReuseAddress(true);
-				InetAddress serverIP = InetAddress.getByName(serverAddress);
+				System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
+				System.out.println(" ");
 	
-				// Association de l'adresse et du port à la connexien
-				Listener.bind(new InetSocketAddress(serverIP, serverPort));
-				System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);				
-				//File file = new File("Server/Serveur/Serveur/baseDonnees.txt");
-				//creerCompte(file, "layla", "ly");
-				
-				
-				try {
-					// À chaque fois qu'un nouveau client se, connecte, on exécute la fonstion
-					// run() de l'objet ClientHandler
-					while (true) {
-					// Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
-					// Une nouvetle connection : on incémente le compteur clientNumber 
-						new ClientHandler(Listener.accept(), clientNumber++).start();
-					}
-				} 
-				//catch (IOException e) {
-					//System.out.println(e.getMessage());
-				//}
-				finally {
-				// Fermeture de la connexion
-					//if (Listener != null && !Listener.isClosed())
-					Listener.close();
-				} 
+				String[] infoImage = getInfosImage(username, serverAddress, serverPort, input);
+				socket = new Socket(serverAddress, serverPort);
+
+				DataInputStream in = new DataInputStream(socket.getInputStream());
+				System.out.println(in.readUTF());
+				System.out.println(in.readUTF());
+				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+				out.writeUTF(infoImage[0]);
+				out.writeUTF(infoImage[1]);
+
+			}
+			finally {
+				System.out.println("Press to continue: " + input.nextLine());
 			}
 		}
+		System.out.println("Press to continue: " + input.nextLine());
+		socket.close();
+	}
 }
