@@ -20,15 +20,14 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 		}
 	
 		public void run() { // Création de thread qui envoi un message à un client
+			//Scanner scanner = new Scanner(System.in);
 			try {
-				//Scanner scanner = new Scanner(System.in);
+				Scanner scanner = new Scanner(System.in);
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
 				DataInputStream message = new DataInputStream(socket.getInputStream());
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
-				//out.writeUTF("Press to continue.");
-				//System.out.println("Press to continue.");
-				//System.out.print(scanner.nextLine());
-
+				out.writeUTF("Press to continue.");
+				System.out.println("Press to continue.");
 				System.out.println("Received from client#" + clientNumber + ":" + message.readUTF());
 
 				String nameImage = message.readUTF();
@@ -39,7 +38,6 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 				File outputFile = new File("Server/Serveur/Client/" + nameImage + "_processed.jpg");
 				ImageIO.write(newImage, "jpg", outputFile);
 				System.out.println("Resulting image saved in: " + outputFile.getPath());
-				//scanner.close();
 			} 
 			catch (IOException e) {
 				System.out.println("Error handling client# " + clientNumber + ": " + e);

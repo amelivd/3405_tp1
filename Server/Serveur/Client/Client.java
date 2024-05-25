@@ -99,18 +99,20 @@ public class Client {
 				socket = new Socket(serverAddress, serverPort);
 
 				DataInputStream in = new DataInputStream(socket.getInputStream());
-				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 				System.out.println(in.readUTF());
-				//System.out.println(in.readUTF());
+				System.out.println(in.readUTF());
+				
+				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+				System.out.print(input.nextLine());
 				out.writeUTF(infoImage[0]);
 				out.writeUTF(infoImage[1]);
 
 			}
 			finally {
-				//System.out.println("Press to continue: " + input.nextLine());
+				System.out.println("Press to continue: " + input.nextLine());
 			}
 		}
-		//System.out.println("Press to continue: " + input.nextLine());
+		System.out.println("Press to continue: " + input.nextLine());
 		socket.close();
 	}
 }
