@@ -1,117 +1,129 @@
-package Client;
-import Serveur.Serveur;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.DataInputStream;
-import java.net.Socket;
+package Serveur;
 import java.util.Scanner;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
-// Application client
-public class Client {
-	private static Socket socket;
-	public int clientPort;
-	public String clientAddresse;
-	String nomUtilisateur = null;
-	String motDePasse = null;
-	String nomImage = null;
 
-	public static void getClientInfo(String[] userInfo, Scanner scanner) {
-		System.out.print("Veuillez entrer votre nom d'utilisateur: ");
-		userInfo[0] = scanner.nextLine();
+public class Serveur {
+	private static ServerSocket Listener; // Application Serveur
+	public static void getServerInfo(String[] info, Scanner scanner) {
+		System.out.print("Entrez l'adresse IP du serveur: ");
+		info[0] = scanner.nextLine();
 		
-		System.out.print("Veuillez entrer votre mot de passe: ");
-		userInfo[1] = scanner.nextLine();
+		System.out.print("Entrez le port d'écoute du serveur: ");
+		info[1] = scanner.nextLine();
 	}
-	
-	public static boolean verifyClientInfo(String username, String password) {
-		File newFile = new File("src/Serveur/baseDonnees.txt");
-		String[] donnees = Serveur.getDonnees(newFile, username);
-		
-		if (donnees[0] != null ) {
-			if (donnees[1].equals(password)) {
-				System.out.println("Compte existant et valide.");
-				return true;
-			}
-			else {
-				System.out.println("Erreur dans la saisie du mot de passe.");
-				return false;
-			}
 
-		}
-		else {
-			System.out.println("Creation de compte");
-			Serveur.creerCompte(newFile, username, password);
-			return true;
-			}
-		
-	} 
-	public static String[] getInfosImage(String username, String address, int port, Scanner scanner) {
-		String[] pack = new String[2];
-		String nomImage = null;
-		System.out.print("Veuillez indiquer le nom de l'image à traiter: ");
-		nomImage = scanner.nextLine();
+	
+	public static boolean verify( String adresse, int port) {
+		String[] ipParts = null;
+		boolean isValid = true;
 		try {
-			File file = new File("Server/Serveur/Client/" + nomImage + ".txt");
+			ipParts = adresse.split("\\.");
 		}
-		finally {
-			System.out.println("Image name same as path");
+		catch (NumberFormatException e){
 		}
-		LocalDate date = LocalDate.now();
-		LocalTime time = LocalTime.now();
-		LocalTime roundedTime = LocalTime.of(time.getHour(), time.getMinute(), time.getSecond());
-		String infos = 
-				"[" + username + " - " + address + ":" + String.valueOf(port) +
-				" - " + String.valueOf(date) + "@" + String.valueOf(roundedTime) + "] : " +
-				"Image " + nomImage + ".jpg reçue pour traitement. ";
-		pack[0] = infos;
-		pack[1] = nomImage;
-				
-		return pack;
+		if (ipParts.length != 4) {
+	            System.out.println("Adresse IP invalide. ");
+	            isValid = false;
+	        }
+		if (ipParts != null) {
+		 for (String part : ipParts) {
+	            int byteValue = Integer.valueOf(part);
+	            if (byteValue < 0 || byteValue > 255) {
+	                System.out.println("Adresse IP invalide. ");
+	                isValid = false;
+	                }
+	        }
+		}
+		
+		 if (port < 5000 || port > 5050) {
+	            System.out.println("Numero de port invalide.");
+	            isValid = false;
+	     }
+		 return isValid;
+		
 	}
 	
-	public static void main(String[] args) throws Exception {
-		Scanner input = new Scanner(System.in);
-		String[] serverInfo = new String[2];
-		Serveur.getServerInfo(serverInfo, input);
-		String serverAddress = serverInfo[0];
-		int serverPort = Integer.valueOf(serverInfo[1]);
-		boolean serverValid = Serveur.verify(serverAddress, serverPort);
-		// Adresse et port du serveur
-		boolean clientValid = false;
-		String username = null;
-		String password = null;
-		if (serverValid) {
-			String[] clientInfo = new String[2];
-			getClientInfo(clientInfo, input);
-			username = clientInfo[0];
-			password = clientInfo[1];
-			clientValid = verifyClientInfo(username, password);
+		
+	public static void creerCompte(File file, String nomUtilisateur, String password) {
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+				writer.write(nomUtilisateur + " ");
+				writer.write(password);
+				writer.newLine();
+			} catch (IOException e) {
+				System.err.println("Error writing to file: " + file.getPath());
+	            e.printStackTrace();
+			}
 		}
-		// Création d'une nouvelle connexion avec le serveur
-		if (clientValid) {
+		
+		
+		public static String[] getDonnees(File data, String element) {
+			String elem1 = null;
+			String elem2 = null;
 			try {
-				System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
-				System.out.println(" ");
-	
-				String[] infoImage = getInfosImage(username, serverAddress, serverPort, input);
-				socket = new Socket(serverAddress, serverPort);
-
-				DataInputStream in = new DataInputStream(socket.getInputStream());
-				System.out.println(in.readUTF());
-				System.out.println(in.readUTF());
-				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-				out.writeUTF(infoImage[0]);
-				out.writeUTF(infoImage[1]);
-
+				Scanner scanner = new Scanner(data);
+				while(scanner.hasNextLine()) {
+					String[] line = scanner.nextLine().split(" ");
+					if (line[0].equals(element)) {
+						elem1 = line[0];
+						elem2 = line[1];
+						break;
+					}
+				}
+				scanner.close();
 			}
-			finally {
-				System.out.println("Press to continue: " + input.nextLine());
+			catch (FileNotFoundException e) {
+				 System.err.println("File not found: " + data.getPath());
+			}
+			String[] infos = new String[] {elem1, elem2};
+			return infos;
+		}
+		
+		public static void main(String[] args) throws Exception {
+			// Compteur incrémenté à chaque connexion d'un client au serveur
+			Scanner input = new Scanner(System.in);
+			int clientNumber = 0;
+
+			String[] serverInfo = new String[2];
+			getServerInfo(serverInfo, input);
+			String serverAddress = serverInfo[0];
+			int serverPort = Integer.valueOf(serverInfo[1]);
+			
+			boolean isValid = verify(serverAddress, serverPort);
+			
+			
+			
+			// Création de la connexion pour communiquer avec les clients
+			if (isValid) {
+				Listener = new ServerSocket();
+				Listener.setReuseAddress(true);
+				InetAddress serverIP = InetAddress.getByName(serverAddress);
+	
+				// Association de l'adresse et du port à la connexien
+				Listener.bind(new InetSocketAddress(serverIP, serverPort));
+				System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);								
+				
+				try {
+					// À chaque fois qu'un nouveau client se connecte on exécute la fonction
+					// run() de l'objet ClientHandler
+					while (true) {
+					// Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
+					// Une nouvelle connection : on incrémente le compteur clientNumber 
+						new ClientHandler(Listener.accept(), clientNumber++).start();
+					}
+				} 
+
+				finally {
+				// Fermeture de la connexion
+					Listener.close();
+				} 
 			}
 		}
-		System.out.println("Press to continue: " + input.nextLine());
-		socket.close();
-	}
 }
