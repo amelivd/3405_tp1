@@ -89,7 +89,7 @@ public class Client {
 		// Création d'une nouvelle connexion avec le serveur
 		if (clientValid) {
 			try {
-				System.out.format("Server running in [%s:%d]", serverAddress, serverPort);
+				System.out.format("Server is running on [%s:%d]", serverAddress, serverPort);
 				System.out.println(" ");  // pour sauter de ligne
 	
 				String[] infoImage = getInfosImage(username, serverAddress, serverPort, input);
