@@ -1,48 +1,45 @@
 package Client;
-import Serveur.Serveur;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.DataInputStream;
 import java.net.Socket;
 import java.util.Scanner;
+
+import Server.Server;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 // Application client
 public class Client {
 	private static Socket socket;
-	public int clientPort;
-	public String clientAddresse;
-	String nomUtilisateur = null;
-	String motDePasse = null;
-	String nomImage = null;
 
 	public static void getClientInfo(String[] userInfo, Scanner scanner) {
-		System.out.print("Veuillez entrer votre nom d'utilisateur: ");
+		System.out.print("Enter your username: ");
 		userInfo[0] = scanner.nextLine();
 		
-		System.out.print("Veuillez entrer votre mot de passe: ");
+		System.out.print("Enter your password: ");
 		userInfo[1] = scanner.nextLine();
 	}
 	
 	public static boolean verifyClientInfo(String username, String password) {
-		File newFile = new File("Server/Serveur/Serveur/baseDonnees.txt");
-		String[] donnees = Serveur.getDonnees(newFile, username);
+		File newFile = new File("Server/Serveur/Server/baseDonnees.txt");
+		String[] donnees = Server.getDonnees(newFile, username);
 		
 		if (donnees[0] != null ) {
 			if (donnees[1].equals(password)) {
-				System.out.println("Compte existant et valide.");
+				System.out.println("Valid account");
 				return true;
 			}
 			else {
-				System.out.println("Erreur dans la saisie du mot de passe.");
+				System.out.println("Incorrect password");
 				return false;
 			}
 
 		}
 		else {
-			System.out.println("Creation de compte");
-			Serveur.creerCompte(newFile, username, password);
+			System.out.println("Creating account");
+			Server.creerCompte(newFile, username, password);
 			return true;
 			}
 		
@@ -50,7 +47,7 @@ public class Client {
 	public static String[] getInfosImage(String username, String address, int port, Scanner scanner) {
 		String[] pack = new String[2];
 		String nomImage = null;
-		System.out.print("Veuillez indiquer le nom de l'image à traiter: ");
+		System.out.print("Enter the name of the image: ");
 		nomImage = scanner.nextLine();
 		try {
 			File file = new File("Server/Serveur/Client/" + nomImage + ".txt");
@@ -64,7 +61,7 @@ public class Client {
 		String infos = 
 				"[" + username + " - " + address + ":" + String.valueOf(port) +
 				" - " + String.valueOf(date) + "@" + String.valueOf(roundedTime) + "] : " +
-				"Image " + nomImage + ".jpg reçue pour traitement. ";
+				"Image " + nomImage + ".jpg received for treatment ";
 		pack[0] = infos;
 		pack[1] = nomImage;
 				
@@ -74,10 +71,10 @@ public class Client {
 	public static void main(String[] args) throws Exception {
 		Scanner input = new Scanner(System.in);
 		String[] serverInfo = new String[2];
-		Serveur.getServerInfo(serverInfo, input);
+		Server.getServerInfo(serverInfo, input);
 		String serverAddress = serverInfo[0];
 		int serverPort = Integer.valueOf(serverInfo[1]);
-		boolean serverValid = Serveur.verify(serverAddress, serverPort);
+		boolean serverValid = Server.verify(serverAddress, serverPort);
 		// Adresse et port du serveur
 		boolean clientValid = false;
 		String username = null;
@@ -92,7 +89,7 @@ public class Client {
 		// Création d'une nouvelle connexion avec le serveur
 		if (clientValid) {
 			try {
-				System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
+				System.out.format("Server running in [%s:%d]", serverAddress, serverPort);
 				System.out.println(" ");  // pour sauter de ligne
 	
 				String[] infoImage = getInfosImage(username, serverAddress, serverPort, input);

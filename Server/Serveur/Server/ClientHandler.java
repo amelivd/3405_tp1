@@ -1,4 +1,4 @@
-package Serveur;
+package Server;
 import java.io.DataOutputStream;
 import java.util.Scanner;
 import java.io.DataInputStream;
