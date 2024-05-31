@@ -49,12 +49,12 @@ public class Client {
 		String nomImage = null;
 		System.out.print("Enter the name of the image: ");
 		nomImage = scanner.nextLine();
-		try {
+		/*try {
 			File file = new File("Server/Serveur/Client/" + nomImage + ".txt");
 		}
 		finally {
 			System.out.println("Image name same as path");
-		}
+		}*/
 		LocalDate date = LocalDate.now();
 		LocalTime time = LocalTime.now();
 		LocalTime roundedTime = LocalTime.of(time.getHour(), time.getMinute(), time.getSecond());

@@ -1,6 +1,5 @@
 package Server;
 import java.io.DataOutputStream;
-import java.util.Scanner;
 import java.io.DataInputStream;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -22,7 +21,6 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 		public void run() { // Création de thread qui envoi un message à un client
 			//Scanner scanner = new Scanner(System.in);
 			try {
-				Scanner scanner = new Scanner(System.in);
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi 
 				DataInputStream message = new DataInputStream(socket.getInputStream());
 				out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
